@@ -11,11 +11,23 @@
 <h3>How does it work?</h3>
 
 <p>Files are uploaded to folders located <a href="https://drive.google.com/open?id=1a_ZOqi75h6nTvsUEPDi8NGUrb9Tk-dkh">here</a>
-    However, the files are all encrypted on upload. Only members of the security group are able to download and decrypt them#
-    using this tool</p>
+    However, the files are all encrypted on upload. Only members of the security group are able to download and decrypt them
+    using this tool.</p>
 
 <h3>How do I join a security group?</h3>
 
-<p>Once you have created an account, you can create a security group, or get added to one by a group's owner</p>
+<p>Once you have created an account, you can create a security group, or get added to one by a group's owner.</p>
+
+<h3>Let's get started!</h3>
+
+{% if user.is_authenticated %}
+
+<p>Head over to your profile page <a href="{% url 'userpage' user.username %}">here</a> to start managing files and groups.</p>
+
+{% else %}
+
+<p><a href="{% url 'signup' %}">Sign up</a> or <a href="{% url 'login' %}">log in</a> to get started.</p>
+
+{% endif %}
 
 {% endblock %}

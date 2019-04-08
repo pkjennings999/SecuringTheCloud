@@ -10,7 +10,7 @@ from app import forms, views
 from app.models import Group, ProxyUser, User
 
 urlpatterns = [
-    path('', include(('app.urls', "app"), "appurls")),
+    path('', views.home, name='home'),
     path('contact', views.contact, name='contact'),
     path('about/', views.about, name='about'),
     path('seed/', views.seed, name='seed'),
