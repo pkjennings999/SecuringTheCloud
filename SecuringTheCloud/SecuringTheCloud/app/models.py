@@ -4,6 +4,7 @@ Definition of models.
 
 from django.db import models
 from django.db.models import Sum
+from django.contrib.auth.models import User
 
 class Poll(models.Model):
     """A poll object for use in the application views and repository."""
@@ -32,3 +33,28 @@ class Choice(models.Model):
     def __unicode__(self):
         """Returns a string representation of a choice."""
         return self.text
+
+class Group(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=200)
+    gdriveid = models.CharField(max_length=200)
+
+    def __unicode__(self):
+        return name
+
+class Membership(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+
+class ProxyUser(User):
+
+    class Meta:
+        proxy = True
+        ordering = ('first_name', )
+
+    def getGroups(self):
+        groups = Membership.objects.filter(user=self)
+        groupList = []
+        for g in groups:
+            groupList.append(Group.objects.get(id=g.id))
+        return groupList

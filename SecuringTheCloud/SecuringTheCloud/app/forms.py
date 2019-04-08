@@ -16,3 +16,6 @@ class BootstrapAuthenticationForm(AuthenticationForm):
                                widget=forms.PasswordInput({
                                    'class': 'form-control',
                                    'placeholder':'Password'}))
+
+class CreateGroupForm(forms.Form):
+    name = forms.CharField(max_length=100, label='Name')

@@ -1,0 +1,38 @@
+﻿{% extends "app/layout.html" %}
+
+{% block content %}
+
+
+<h2>{{title}}.</h2>
+<h3>{{error}}</h3>
+
+<a class="btn btn-primary" href="{% url 'createGroup' user.username%}">Create Group</a>
+
+{% if proxyuser.getGroups %}
+<table class="table table-hover">
+    <tbody>
+        {% for group in proxyuser.getGroups %}
+        {% if group.owner_id == user.id %}
+        <tr>
+            <td>
+                <a href="{% url 'driveFolder' group.gdriveid %}">{{group.name}}</a>
+                <a class="btn btn-primary" style="float:right" {#href="{% url 'createGroup' user.username%}"#}>Manage Users</a>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td>
+                <a href="{% url 'driveFolder' group.gdriveid %}">{{group.name}}</a>
+            </td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No groups available.</p>
+{% endif %}
+
+<p>This is a sample polls application that demonstrates the use of Django web framework.</p>
+
+{% endblock %}

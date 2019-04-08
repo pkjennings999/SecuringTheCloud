@@ -1,0 +1,35 @@
+﻿{% extends "app/layout.html" %}
+
+{% block content %}
+
+<h2>{{title}}.</h2>
+
+<a class="btn btn-primary" href="{% url 'driveUpload'%}">Upload File</a>
+
+{% if file_list %}
+<table class="table table-hover">
+    <tbody>
+        {% for file in file_list %}
+        {% if file.mimeType == 'application/vnd.google-apps.folder'%}
+        <tr>
+            <td>
+                <a href="{% url 'driveFolder' file.id %}">{{file.title}}</a>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td>
+                <a href="{% url 'driveDownload' file.id file.title %}">{{file.title}}</a>
+            </td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No files available.</p>
+{% endif %}
+
+<p>This is a sample polls application that demonstrates the use of Django web framework.</p>
+
+{% endblock %}

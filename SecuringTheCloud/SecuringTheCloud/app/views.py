@@ -6,12 +6,16 @@ import json
 from os import path
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
-from django.urls import reverse
+from django.contrib.auth.forms import UserCreationForm
+from django.urls import reverse, reverse_lazy
 from django.http import HttpRequest, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.utils import timezone
-from django.views.generic import ListView, DetailView
-from app.models import Choice, Poll
+from django.views.generic import ListView, DetailView, CreateView
+from app.models import Choice, Poll, ProxyUser, Group, User, Membership
+from app.googledrive import GoogleDrive
+from .forms import CreateGroupForm
+from django.http import HttpResponse
 
 
 class PollListView(ListView):
@@ -43,6 +47,19 @@ class PollResultsView(DetailView):
         context['title'] = 'Results'
         context['year'] = datetime.now().year
         return context
+
+class GroupsView(ListView):
+    model = User
+
+    def get_context_data(self, **kwargs):
+        context = super(GroupsView, self).get_context_data(**kwargs)
+        context['title'] = 'Groups'
+        return context
+
+class SignUp(CreateView):
+    form_class = UserCreationForm
+    success_url = reverse_lazy('login')
+    template_name = 'app/signup.html'
 
 def contact(request):
     """Renders the contact page."""
@@ -108,3 +125,108 @@ def seed(request):
             choice.save()
 
     return HttpResponseRedirect(reverse('app:home'))
+
+def drive(request):
+    """Drive login."""
+    assert isinstance(request, HttpRequest)
+    drive = GoogleDrive()
+    file_list = drive.getFiles()
+    return render(
+        request,
+        'app/drive.html',
+        {
+            'title':'Drive',
+            'file_list': file_list
+        }
+    )
+
+def driveFolder(request, folder):
+    """Drive login."""
+    assert isinstance(request, HttpRequest)
+    drive = GoogleDrive()
+    file_list = drive.getFilesInFolder(folder)
+    return render(
+        request,
+        'app/drive.html',
+        {
+            'title':'Drive',
+            'file_list': file_list
+        }
+    )
+
+def driveUpload(request):
+    assert isinstance(request, HttpRequest)
+    gDrive = GoogleDrive()
+    gDrive.uploadFile()
+    return drive(request)
+
+def driveDownload(request, id, title):
+    assert isinstance(request, HttpRequest)
+    gDrive = GoogleDrive()
+    gDrive.downloadFile(id, title)
+    return drive(request)
+
+def createGroup(request, username):
+    assert isinstance(request, HttpRequest)
+    if request.method == 'POST':
+        form = CreateGroupForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            if Group.objects.filter(name=name).exists():
+                return render(
+                    request,
+                    'app/createGroup.html',
+                    {
+                        'title': username,
+                        'form': CreateGroupForm(),
+                        'error':'Group already exists'
+                    }
+                )
+            else:
+                user = User.objects.get_by_natural_key(username)
+                gDrive = GoogleDrive()
+                folderId = gDrive.createGroup(name)
+
+                group = Group()
+                group.name = name
+                group.owner = user
+                group.gdriveid = folderId
+                group.save()
+
+                membership = Membership()
+                membership.group = group
+                membership.user = user
+                membership.save()
+                return redirect('/userpage/'+username)
+    else:
+        return render(
+            request,
+            'app/createGroup.html',
+            {
+                'title': username,
+                'form': CreateGroupForm()
+            }
+        )
+
+def userpage(request, username):
+    assert isinstance(request, HttpRequest)
+    proxyuser = ProxyUser.objects.get_by_natural_key(username)
+    return render(
+            request,
+            'app/userpage.html',
+            {
+                'title': username,
+                'proxyuser': proxyuser
+            }
+        )
+#def createGroup(request):
+#    if request.method == 'POST':
+#        form = CreateGroupForm(request.POST)
+#        if form.is_valid():
+#            name = form.cleaned_data['name']
+            
+#            # Do what you gotta do.
+#            return HttpResponse("")
+#    else:
+#        form = CreateGroupForm()
+#        return render(request, 'userpage.html', {'form': form})

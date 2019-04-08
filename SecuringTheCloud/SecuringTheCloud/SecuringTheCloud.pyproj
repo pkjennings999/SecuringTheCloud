@@ -37,6 +37,9 @@
     <Compile Include="app\admin.py" />
     <Compile Include="app\forms.py" />
     <Compile Include="app\models.py" />
+    <Compile Include="app\googledrive.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="app\tests.py" />
     <Compile Include="app\urls.py" />
     <Compile Include="app\views.py" />
@@ -60,6 +63,10 @@
     <Folder Include="SecuringTheCloud\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="app\templates\app\createGroup.html" />
+    <Content Include="app\templates\app\drive.html" />
+    <Content Include="app\templates\app\signup.html" />
+    <Content Include="app\templates\app\userpage.html" />
     <Content Include="db.sqlite3" />
     <Content Include="requirements.txt" />
     <Content Include="app\samples.json" />
