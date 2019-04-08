@@ -36,11 +36,6 @@ urlpatterns = [
     path('drive/<folder>/', views.driveFolder, name='driveFolder'),
     path('userpage/createGroup/<username>', views.createGroup, name='createGroup'),
     path('userpage/createGroup/', views.createGroup, name='createGroup'),
-    #path('userpage/<username>',
-    #    views.GroupsView.as_view(
-    #        context_object_name='user',
-    #        template_name='app/userpage.html',),
-    #   name='userpage')
     path('userpage/<username>', views.userpage, name='userpage'),
     path('manageUsers/<groupId>', views.manageUsers, name='manageUsers'),
     path('manageUsers/<groupId>/<userId>', views.removeUser, name='removeUser')

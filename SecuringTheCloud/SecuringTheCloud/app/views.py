@@ -19,45 +19,6 @@ from django.http import HttpResponse
 from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
 
-
-#class PollListView(ListView):
-#    """Renders the home page, with a list of all polls."""
-#    model = Poll
-
-#    def get_context_data(self, **kwargs):
-#        context = super(PollListView, self).get_context_data(**kwargs)
-#        context['title'] = 'Polls'
-#        context['year'] = datetime.now().year
-#        return context
-
-#class PollDetailView(DetailView):
-#    """Renders the poll details page."""
-#    model = Poll
-
-#    def get_context_data(self, **kwargs):
-#        context = super(PollDetailView, self).get_context_data(**kwargs)
-#        context['title'] = 'Poll'
-#        context['year'] = datetime.now().year
-#        return context
-
-#class PollResultsView(DetailView):
-#    """Renders the results page."""
-#    model = Poll
-
-#    def get_context_data(self, **kwargs):
-#        context = super(PollResultsView, self).get_context_data(**kwargs)
-#        context['title'] = 'Results'
-#        context['year'] = datetime.now().year
-#        return context
-
-class GroupsView(ListView):
-    model = User
-
-    def get_context_data(self, **kwargs):
-        context = super(GroupsView, self).get_context_data(**kwargs)
-        context['title'] = 'Groups'
-        return context
-
 class SignUp(CreateView):
     form_class = UserCreationForm
     success_url = reverse_lazy('login')
@@ -315,14 +276,3 @@ def removeUser(request, groupId, userId):
         Membership.objects.filter(user=user, group=group).delete()
 
     return redirect('/manageUsers/'+groupId)
-#def createGroup(request):
-#    if request.method == 'POST':
-#        form = CreateGroupForm(request.POST)
-#        if form.is_valid():
-#            name = form.cleaned_data['name']
-            
-#            # Do what you gotta do.
-#            return HttpResponse("")
-#    else:
-#        form = CreateGroupForm()
-#        return render(request, 'userpage.html', {'form': form})
