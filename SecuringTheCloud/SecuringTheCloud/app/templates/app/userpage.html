@@ -15,14 +15,14 @@
         {% if group.owner_id == user.id %}
         <tr>
             <td>
-                <a href="{% url 'driveFolder' group.gdriveid %}">{{group.name}}</a>
+                <a href="{% url 'driveFolder' group.gdriveid group.id %}">{{group.name}}</a>
                 <a class="btn btn-primary" style="float:right" href="{% url 'manageUsers' group.id%}">Manage Users</a>
             </td>
         </tr>
         {% else %}
         <tr>
             <td>
-                <a href="{% url 'driveFolder' group.gdriveid %}">{{group.name}}</a>
+                <a href="{% url 'driveFolder' group.gdriveid group.id %}">{{group.name}}</a>
             </td>
         </tr>
         {% endif %}

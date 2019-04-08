@@ -38,6 +38,7 @@ class Group(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     gdriveid = models.CharField(max_length=200)
+    key = models.BinaryField()
 
     def __unicode__(self):
         return name

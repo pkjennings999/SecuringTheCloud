@@ -4,7 +4,7 @@
 
 <h2>{{title}}.</h2>
 
-<a class="btn btn-primary" href="{% url 'driveUpload' folderId%}">Upload File</a>
+<a class="btn btn-primary" href="{% url 'driveUpload' folderId groupId %}">Upload File</a>
 
 {% if file_list %}
 <table class="table table-hover">
@@ -13,13 +13,13 @@
         {% if file.mimeType == 'application/vnd.google-apps.folder'%}
         <tr>
             <td>
-                <a href="{% url 'driveFolder' file.id %}">{{file.title}}</a>
+                <a href="{% url 'driveFolder' file.id groupId %}">{{file.title}}</a>
             </td>
         </tr>
         {% else %}
         <tr>
             <td>
-                <a href="{% url 'driveDownload' file.id file.title folderId%}">{{file.title}}</a>
+                <a href="{% url 'driveDownload' file.id file.title folderId groupId %}">{{file.title}}</a>
             </td>
         </tr>
         {% endif %}

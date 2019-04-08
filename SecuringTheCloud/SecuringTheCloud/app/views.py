@@ -16,6 +16,8 @@ from app.models import Choice, Poll, ProxyUser, Group, User, Membership
 from app.googledrive import GoogleDrive
 from .forms import CreateGroupForm, AddUserForm
 from django.http import HttpResponse
+from Crypto.Cipher import AES
+from Crypto.Random import get_random_bytes
 
 
 class PollListView(ListView):
@@ -137,11 +139,11 @@ def drive(request):
         {
             'title':'Drive',
             'file_list': file_list,
-            'folderId': '1a_ZOqi75h6nTvsUEPDi8NGUrb9Tk-dkh'
+            'folderId': '1a_ZOqi75h6nTvsUEPDi8NGUrb9Tk-dkh',
         }
     )
 
-def driveFolder(request, folder):
+def driveFolder(request, folder, groupId):
     """Drive login."""
     assert isinstance(request, HttpRequest)
     drive = GoogleDrive()
@@ -152,21 +154,22 @@ def driveFolder(request, folder):
         {
             'title':'Drive',
             'file_list': file_list,
-            'folderId': folder
+            'folderId': folder,
+            'groupId': groupId
         }
     )
 
-def driveUpload(request, folder):
+def driveUpload(request, folder, groupId):
     assert isinstance(request, HttpRequest)
     gDrive = GoogleDrive()
-    gDrive.uploadFile(folder)
-    return driveFolder(request, folder)
+    gDrive.uploadFile(folder, groupId)
+    return driveFolder(request, folder, groupId)
 
-def driveDownload(request, id, title, folder):
+def driveDownload(request, id, title, folder, groupId):
     assert isinstance(request, HttpRequest)
     gDrive = GoogleDrive()
-    gDrive.downloadFile(id, title)
-    return driveFolder(request, folder)
+    gDrive.downloadFile(id, title, groupId)
+    return driveFolder(request, folder, groupId)
 
 def createGroup(request, username):
     assert isinstance(request, HttpRequest)
@@ -193,6 +196,7 @@ def createGroup(request, username):
                 group.name = name
                 group.owner = user
                 group.gdriveid = folderId
+                group.key = get_random_bytes(16)
                 group.save()
 
                 membership = Membership()
