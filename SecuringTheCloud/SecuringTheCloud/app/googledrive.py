@@ -1,8 +1,11 @@
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive as PyDriveGoogleDrive
-from tkinter import Tk
-from tkinter.filedialog import askopenfilename
+#from tkinter import Tk
+#from tkinter.filedialog import askopenfilename
 from tkinter.filedialog import asksaveasfile
+#from threadsafe_tkinter import *
+from easygui import fileopenbox
+from easygui import filesavebox
 import ntpath
 
 class GoogleDrive():
@@ -32,22 +35,21 @@ class GoogleDrive():
     def getFilesInFolder(self, folder):
         return self.drive.ListFile({'q': "'" + folder + "' in parents and trashed=false"}).GetList()
 
-    def uploadFile(self):
-        Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
-        filepath = askopenfilename() # show an "Open" dialog box and return the path to the selected file
-        file = self.drive.CreateFile({'title': ntpath.basename(filepath), 'parents': [{'kind': 'drive#fileLink', 'id': '1a_ZOqi75h6nTvsUEPDi8NGUrb9Tk-dkh'}]})
+    def uploadFile(self, folder):
+        #Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
+        filepath = fileopenbox() # show an "Open" dialog box and return the path to the selected file
+        file = self.drive.CreateFile({'title': ntpath.basename(filepath), 'parents': [{'kind': 'drive#fileLink', 'id': folder}]})
         file.SetContentFile(filepath)
         file.Upload()
 
     def downloadFile(self, id, title):
         file = self.drive.CreateFile({'id': id})
         file.GetContentFile('title')
-        Tk().withdraw()
-        destination = asksaveasfile()
+        #Tk().withdraw()
+        destination = filesavebox()
         if destination is None:
             return
-        file.GetContentFile(destination.name)
-        destination.close()
+        file.GetContentFile(destination)
 
     def createGroup(self, title):
         folder = self.drive.CreateFile({'title': title, 'mimeType' : 'application/vnd.google-apps.folder', 'parents': [{'kind': 'drive#fileLink', 'id': '1a_ZOqi75h6nTvsUEPDi8NGUrb9Tk-dkh'}]})

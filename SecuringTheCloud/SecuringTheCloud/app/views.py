@@ -136,7 +136,8 @@ def drive(request):
         'app/drive.html',
         {
             'title':'Drive',
-            'file_list': file_list
+            'file_list': file_list,
+            'folderId': '1a_ZOqi75h6nTvsUEPDi8NGUrb9Tk-dkh'
         }
     )
 
@@ -150,21 +151,22 @@ def driveFolder(request, folder):
         'app/drive.html',
         {
             'title':'Drive',
-            'file_list': file_list
+            'file_list': file_list,
+            'folderId': folder
         }
     )
 
-def driveUpload(request):
+def driveUpload(request, folder):
     assert isinstance(request, HttpRequest)
     gDrive = GoogleDrive()
-    gDrive.uploadFile()
-    return drive(request)
+    gDrive.uploadFile(folder)
+    return driveFolder(request, folder)
 
-def driveDownload(request, id, title):
+def driveDownload(request, id, title, folder):
     assert isinstance(request, HttpRequest)
     gDrive = GoogleDrive()
     gDrive.downloadFile(id, title)
-    return drive(request)
+    return driveFolder(request, folder)
 
 def createGroup(request, username):
     assert isinstance(request, HttpRequest)
