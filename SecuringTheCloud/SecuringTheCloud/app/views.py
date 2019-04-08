@@ -14,7 +14,7 @@ from django.utils import timezone
 from django.views.generic import ListView, DetailView, CreateView
 from app.models import Choice, Poll, ProxyUser, Group, User, Membership
 from app.googledrive import GoogleDrive
-from .forms import CreateGroupForm
+from .forms import CreateGroupForm, AddUserForm
 from django.http import HttpResponse
 
 
@@ -221,6 +221,70 @@ def userpage(request, username):
                 'proxyuser': proxyuser
             }
         )
+
+def manageUsers(request, groupId):
+    assert isinstance(request, HttpRequest)
+    group = Group.objects.get(id=groupId)
+    if request.method == 'POST':
+        form = AddUserForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            if not User.objects.filter(username=name).exists():
+                return render(
+                    request,
+                    'app/manageUsers.html',
+                    {
+                        'title': 'ManageUsers',
+                        'form': AddUserForm(),
+                        'error':'User doesn\'t exist',
+                        'group': group
+                    }
+                )
+            user = User.objects.get_by_natural_key(name)
+            if Membership.objects.filter(user=user, group=group).exists():
+                return render(
+                    request,
+                    'app/manageUsers.html',
+                    {
+                        'title': 'ManageUsers',
+                        'form': AddUserForm(),
+                        'error':'User is already a member',
+                        'group': group
+                    }
+                )
+            else:
+                membership = Membership()
+                membership.group = group
+                membership.user = user
+                membership.save()
+                return render(
+                    request,
+                    'app/manageUsers.html',
+                    {
+                        'title': 'ManageUsers',
+                        'form': AddUserForm(),
+                        'group': group
+                    }
+                )
+    else:
+        return render(
+                request,
+                'app/manageUsers.html',
+                {
+                    'title': 'ManageUsers',
+                    'form': AddUserForm(),
+                    'group': group
+                }
+            )
+
+def removeUser(request, groupId, userId):
+    group = Group.objects.get(id=groupId)
+    user = User.objects.get(id=userId)
+
+    if Membership.objects.filter(user=user, group=group).exists():
+        Membership.objects.filter(user=user, group=group).delete()
+
+    return redirect('/manageUsers/'+groupId)
 #def createGroup(request):
 #    if request.method == 'POST':
 #        form = CreateGroupForm(request.POST)

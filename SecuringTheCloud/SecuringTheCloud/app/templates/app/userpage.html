@@ -16,7 +16,7 @@
         <tr>
             <td>
                 <a href="{% url 'driveFolder' group.gdriveid %}">{{group.name}}</a>
-                <a class="btn btn-primary" style="float:right" {#href="{% url 'createGroup' user.username%}"#}>Manage Users</a>
+                <a class="btn btn-primary" style="float:right" href="{% url 'manageUsers' group.id%}">Manage Users</a>
             </td>
         </tr>
         {% else %}

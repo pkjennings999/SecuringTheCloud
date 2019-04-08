@@ -40,5 +40,7 @@ urlpatterns = [
     #        context_object_name='user',
     #        template_name='app/userpage.html',),
     #   name='userpage')
-    path('userpage/<username>', views.userpage, name='userpage')
+    path('userpage/<username>', views.userpage, name='userpage'),
+    path('manageUsers/<groupId>', views.manageUsers, name='manageUsers'),
+    path('manageUsers/<groupId>/<userId>', views.removeUser, name='removeUser')
 ]

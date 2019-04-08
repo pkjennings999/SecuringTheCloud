@@ -42,6 +42,15 @@ class Group(models.Model):
     def __unicode__(self):
         return name
 
+    def getUsers(self):
+        users = Membership.objects.filter(group=self)
+        userList = []
+        for u in users:
+            user = User.objects.get(id=u.user_id)
+            if not user == self.owner: 
+                userList.append(user)
+        return userList
+
 class Membership(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
@@ -56,5 +65,5 @@ class ProxyUser(User):
         groups = Membership.objects.filter(user=self)
         groupList = []
         for g in groups:
-            groupList.append(Group.objects.get(id=g.id))
+            groupList.append(Group.objects.get(id=g.group_id))
         return groupList

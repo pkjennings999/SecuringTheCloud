@@ -1,0 +1,33 @@
+﻿{% extends "app/layout.html" %}
+
+{% block content %}
+
+<h2>{{title}}.</h2>
+<h2>{{error}}</h2>
+
+<h3>Add a user</h3>
+<form class="AddUserForm" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Submit" />
+</form>
+
+<h3>Users</h3>
+{% if group.getUsers %}
+<table class="table table-hover">
+    <tbody>
+        {% for user in group.getUsers %}
+        <tr>
+            <td>
+                <p>{{user.username}}</p>
+                <a class="btn btn-primary" style="float:right" href="{% url 'removeUser' group.id user.id %}">Remove</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No users available.</p>
+{% endif %}
+
+{% endblock %}

@@ -19,3 +19,6 @@ class BootstrapAuthenticationForm(AuthenticationForm):
 
 class CreateGroupForm(forms.Form):
     name = forms.CharField(max_length=100, label='Name')
+
+class AddUserForm(forms.Form):
+    name = forms.CharField(max_length=100, label='Name')

@@ -65,6 +65,7 @@
   <ItemGroup>
     <Content Include="app\templates\app\createGroup.html" />
     <Content Include="app\templates\app\drive.html" />
+    <Content Include="app\templates\app\manageUsers.html" />
     <Content Include="app\templates\app\signup.html" />
     <Content Include="app\templates\app\userpage.html" />
     <Content Include="db.sqlite3" />
