@@ -12,7 +12,7 @@ from django.http import HttpRequest, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, redirect
 from django.utils import timezone
 from django.views.generic import ListView, DetailView, CreateView
-from app.models import Choice, Poll, ProxyUser, Group, User, Membership
+from app.models import ProxyUser, Group, User, Membership
 from app.googledrive import GoogleDrive
 from .forms import CreateGroupForm, AddUserForm
 from django.http import HttpResponse
@@ -20,35 +20,35 @@ from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
 
 
-class PollListView(ListView):
-    """Renders the home page, with a list of all polls."""
-    model = Poll
+#class PollListView(ListView):
+#    """Renders the home page, with a list of all polls."""
+#    model = Poll
 
-    def get_context_data(self, **kwargs):
-        context = super(PollListView, self).get_context_data(**kwargs)
-        context['title'] = 'Polls'
-        context['year'] = datetime.now().year
-        return context
+#    def get_context_data(self, **kwargs):
+#        context = super(PollListView, self).get_context_data(**kwargs)
+#        context['title'] = 'Polls'
+#        context['year'] = datetime.now().year
+#        return context
 
-class PollDetailView(DetailView):
-    """Renders the poll details page."""
-    model = Poll
+#class PollDetailView(DetailView):
+#    """Renders the poll details page."""
+#    model = Poll
 
-    def get_context_data(self, **kwargs):
-        context = super(PollDetailView, self).get_context_data(**kwargs)
-        context['title'] = 'Poll'
-        context['year'] = datetime.now().year
-        return context
+#    def get_context_data(self, **kwargs):
+#        context = super(PollDetailView, self).get_context_data(**kwargs)
+#        context['title'] = 'Poll'
+#        context['year'] = datetime.now().year
+#        return context
 
-class PollResultsView(DetailView):
-    """Renders the results page."""
-    model = Poll
+#class PollResultsView(DetailView):
+#    """Renders the results page."""
+#    model = Poll
 
-    def get_context_data(self, **kwargs):
-        context = super(PollResultsView, self).get_context_data(**kwargs)
-        context['title'] = 'Results'
-        context['year'] = datetime.now().year
-        return context
+#    def get_context_data(self, **kwargs):
+#        context = super(PollResultsView, self).get_context_data(**kwargs)
+#        context['title'] = 'Results'
+#        context['year'] = datetime.now().year
+#        return context
 
 class GroupsView(ListView):
     model = User
@@ -140,6 +140,7 @@ def seed(request):
 
     return HttpResponseRedirect(reverse('app:home'))
 
+@login_required
 def drive(request):
     """Drive login."""
     assert isinstance(request, HttpRequest)
@@ -155,34 +156,44 @@ def drive(request):
         }
     )
 
+@login_required
 def driveFolder(request, folder, groupId):
     """Drive login."""
     assert isinstance(request, HttpRequest)
     drive = GoogleDrive()
     file_list = drive.getFilesInFolder(folder)
+    group = Group.objects.get(id=groupId)
+    membersList =  []
+    for m in Membership.objects.filter(group=group):
+        membersList.append(m.user_id)
     return render(
         request,
         'app/drive.html',
         {
-            'title':'Drive',
+            'title':group.name,
             'file_list': file_list,
             'folderId': folder,
-            'groupId': groupId
+            'groupId': groupId,
+            'membersList': membersList,
+            'errorMessage': 'app/errors/403.html'
         }
     )
 
+@login_required
 def driveUpload(request, folder, groupId):
     assert isinstance(request, HttpRequest)
     gDrive = GoogleDrive()
     gDrive.uploadFile(folder, groupId)
     return driveFolder(request, folder, groupId)
 
+@login_required
 def driveDownload(request, id, title, folder, groupId):
     assert isinstance(request, HttpRequest)
     gDrive = GoogleDrive()
     gDrive.downloadFile(id, title, groupId)
     return driveFolder(request, folder, groupId)
 
+@login_required
 def createGroup(request, username):
     assert isinstance(request, HttpRequest)
     if request.method == 'POST':
@@ -226,6 +237,7 @@ def createGroup(request, username):
             }
         )
 
+@login_required
 def userpage(request, username):
     assert isinstance(request, HttpRequest)
     proxyuser = ProxyUser.objects.get_by_natural_key(username)
@@ -233,11 +245,12 @@ def userpage(request, username):
             request,
             'app/userpage.html',
             {
-                'title': username,
+                'title': 'Manage groups',
                 'proxyuser': proxyuser
             }
         )
 
+@login_required
 def manageUsers(request, groupId):
     assert isinstance(request, HttpRequest)
     group = Group.objects.get(id=groupId)
@@ -293,6 +306,7 @@ def manageUsers(request, groupId):
                 }
             )
 
+@login_required
 def removeUser(request, groupId, userId):
     group = Group.objects.get(id=groupId)
     user = User.objects.get(id=userId)

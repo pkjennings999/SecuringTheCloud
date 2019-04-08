@@ -2,6 +2,8 @@
 
 {% block content %}
 
+{% if user.id in membersList%}
+
 <h2>{{title}}.</h2>
 
 <a class="btn btn-primary" href="{% url 'driveUpload' folderId groupId %}">Upload File</a>
@@ -30,6 +32,10 @@
 <p>No files available.</p>
 {% endif %}
 
-<p>This is a sample polls application that demonstrates the use of Django web framework.</p>
+{% else %}
+
+{% include 'app/errors/403.html' %}
+
+{% endif %}
 
 {% endblock %}
