@@ -33,5 +33,7 @@ urlpatterns = [
     path('userpage/createGroup/', views.createGroup, name='createGroup'),
     path('userpage/<username>', views.userpage, name='userpage'),
     path('manageUsers/<groupId>', views.manageUsers, name='manageUsers'),
-    path('manageUsers/<groupId>/<userId>', views.removeUser, name='removeUser')
+    path('manageUsers/<groupId>/<userId>', views.removeUser, name='removeUser'),
+    path('drive/deleteFile/<fileId>/<folder>/<groupId>/', views.driveDelete, name='deleteFile'),
+    path('userpage/deleteGroup/<groupId>', views.deleteGroup, name='deleteGroup')
 ]

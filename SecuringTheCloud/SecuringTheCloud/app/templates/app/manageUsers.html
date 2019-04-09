@@ -5,6 +5,7 @@
 <h2>{{title}}.</h2>
 <h2>{{error}}</h2>
 
+{#Display the add user form#}
 <h3>Add a user</h3>
 <form class="AddUserForm" method="post">
     {% csrf_token %}
@@ -16,6 +17,7 @@
 {% if group.getUsers %}
 <table class="table table-hover">
     <tbody>
+        {#Iterate through the users in a group and display them#}
         {% for user in group.getUsers %}
         <tr>
             <td>

@@ -4,6 +4,7 @@
 
 <h2>{{title}}.</h2>
 
+{#Display the form for creating a group#}
 <form class="CreateGroupForm" method="post">
     {% csrf_token %}
     {{ form.as_p }}

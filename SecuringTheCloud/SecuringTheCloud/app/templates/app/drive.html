@@ -8,6 +8,7 @@
 
 <a class="btn btn-primary" href="{% url 'driveUpload' folderId groupId %}">Upload File</a>
 
+{#Iterate though the files in the drive and display them#}
 {% if file_list %}
 <table class="table table-hover">
     <tbody>
@@ -22,6 +23,7 @@
         <tr>
             <td>
                 <a href="{% url 'driveDownload' file.id file.title folderId groupId %}">{{file.title}}</a>
+                <a class="btn btn-primary" style="float:right" href="{% url 'deleteFile' file.id folderId groupId %}">Delete</a>            
             </td>
         </tr>
         {% endif %}

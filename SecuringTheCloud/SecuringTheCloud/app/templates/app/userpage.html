@@ -5,20 +5,25 @@
 
 <h2>{{title}}.</h2>
 <h3>{{error}}</h3>
-
+    
 <a class="btn btn-primary" href="{% url 'createGroup' user.username%}">Create Group</a>
 
+{#Iterate through the groups that the use is a member of and display them#}
 {% if proxyuser.getGroups %}
 <table class="table table-hover">
     <tbody>
         {% for group in proxyuser.getGroups %}
+        {#If the user is the owner, show the admin buttons#}
         {% if group.owner_id == user.id %}
         <tr>
             <td>
                 <a href="{% url 'driveFolder' group.gdriveid group.id %}">{{group.name}}</a>
+                <a class="btn btn-primary" style="float:right" href="{% url 'deleteGroup' group.id%}">Delete Group</a>
+                <span></span>
                 <a class="btn btn-primary" style="float:right" href="{% url 'manageUsers' group.id%}">Manage Users</a>
             </td>
         </tr>
+        {#Otherwise just show the group name#}
         {% else %}
         <tr>
             <td>

@@ -1,3 +1,4 @@
+{#Partial html file for the user part of the banner#}
 {% if user.is_superuser %}
 
 <ul class="nav navbar-nav navbar-right">
@@ -5,6 +6,7 @@
 </ul>
 {% endif %}
 
+{#Show the 'hello' message and log off button if the user is logged in#}
 {% if user.is_authenticated %}
 <form id="logoutForm" action="/logout/" method="post" class="navbar-right">
     {% csrf_token %}
@@ -15,6 +17,7 @@
 
 </form>
 
+{#Show the login and signup buttons if not#}
 {% else %}
 
 <ul class="nav navbar-nav navbar-right">
