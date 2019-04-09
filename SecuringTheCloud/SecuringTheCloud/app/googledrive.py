@@ -1,15 +1,10 @@
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive as PyDriveGoogleDrive
-#from tkinter import Tk
-#from tkinter.filedialog import askopenfilename
-from tkinter.filedialog import asksaveasfile
-#from threadsafe_tkinter import *
 from easygui import fileopenbox
 from easygui import filesavebox
 import ntpath
 from Crypto.Cipher import AES
 from app.models import Group
-import os
 
 class GoogleDrive():
     gauth = None
@@ -81,8 +76,3 @@ class GoogleDrive():
         typeofdata = type(data)
         file_out = open(destination, "wb")
         file_out.write(data)
-
-    def fucksake(self):
-        with open('E:\\TEST1.PNG', 'rb') as f1: 
-            with open('E:\\uggggggh.png', 'wb') as f2:
-                f2.write(f1.read())

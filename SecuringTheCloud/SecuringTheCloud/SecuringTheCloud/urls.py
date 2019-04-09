@@ -2,18 +2,14 @@
 Definition of urls for SecuringTheCloud.
 """
 
-from datetime import datetime
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth.views import LoginView, LogoutView
 from app import forms, views
-from app.models import Group, ProxyUser, User
 
+#Routing settings for the project. At a most basic level it maps a url path to a view
 urlpatterns = [
     path('', views.home, name='home'),
-    path('contact', views.contact, name='contact'),
-    path('about/', views.about, name='about'),
-    path('seed/', views.seed, name='seed'),
     path('login/', 
         LoginView.as_view
         (
@@ -22,7 +18,6 @@ urlpatterns = [
             extra_context =
             {
                 'title': 'Log in',
-                'year': datetime.now().year,
             }
          ),
         name='login'),
